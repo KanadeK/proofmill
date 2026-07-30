@@ -4,9 +4,10 @@ import argparse
 import hashlib
 import shutil
 import tempfile
+import time
 from pathlib import Path
 
-from package_release import ROOT, package
+from package_release import ROOT, package, validate_archives
 
 
 def _hashes(path: Path) -> dict[str, str]:
@@ -23,7 +24,10 @@ def check(copy_to: Path | None = None) -> None:
         first = base / "first"
         second = base / "second"
         package(first)
+        time.sleep(1.1)
         package(second)
+        validate_archives(first)
+        validate_archives(second)
         first_hashes = _hashes(first)
         second_hashes = _hashes(second)
         if first_hashes != second_hashes:

@@ -58,3 +58,44 @@ jobs:
             dist-site/
             coverage.xml
           if-no-files-found: error
+
+  reproducible-release:
+    name: Reproducible release (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --extra dev --frozen
+      - run: uv run python scripts/package_release.py --output dist-repro
+      - uses: actions/upload-artifact@v7
+        with:
+          name: proofmill-repro-${{ runner.os }}
+          path: dist-repro/
+          if-no-files-found: error
+
+  cross-platform-repro:
+    name: Cross-platform release bytes
+    needs: reproducible-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: proofmill-repro-*
+          path: repro
+      - name: Compare Linux and Windows release bytes
+        shell: bash
+        run: |
+          diff -u \
+            repro/proofmill-repro-Linux/SHA256SUMS \
+            repro/proofmill-repro-Windows/SHA256SUMS
+          (cd repro/proofmill-repro-Linux && sha256sum --check SHA256SUMS)
+          (cd repro/proofmill-repro-Windows && sha256sum --check SHA256SUMS)
