@@ -46,22 +46,25 @@ def _verify_examples() -> None:
 
 def main() -> int:
     python = sys.executable
+    git = ["git", "-c", f"safe.directory={ROOT.as_posix()}"]
     _run(["uv", "run", "ruff", "format", "--check", "."])
     _run(["uv", "run", "ruff", "check", "."])
     _run(["uv", "run", "mypy"])
-    _run(
-        [
-            "uv",
-            "run",
-            "pytest",
-            "--basetemp=tmp/verify-pytest",
-            "-o",
-            "cache_dir=tmp/verify-pytest-cache",
-            "--cov=proofmill",
-            "--cov-report=term-missing",
-            "--cov-report=xml",
-        ]
-    )
+    with tempfile.TemporaryDirectory(prefix="proofmill-pytest-") as temporary:
+        pytest_root = Path(temporary)
+        _run(
+            [
+                "uv",
+                "run",
+                "pytest",
+                f"--basetemp={pytest_root / 'run'}",
+                "-o",
+                f"cache_dir={pytest_root / 'cache'}",
+                "--cov=proofmill",
+                "--cov-report=term-missing",
+                "--cov-report=xml",
+            ]
+        )
     _verify_examples()
     _run(
         [
@@ -103,9 +106,9 @@ def main() -> int:
         ]
     )
     _run(["uv", "run", python, "scripts/package_smoke.py", "--dist", "dist"])
-    _run(["git", "diff", "--check"])
+    _run([*git, "diff", "--check"])
     if os.environ.get("CI"):
-        _run(["git", "status", "--short"])
+        _run([*git, "status", "--short"])
     print("ProofMill verification passed.")
     return 0
 

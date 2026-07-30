@@ -20,7 +20,7 @@ runs:
   using: composite
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: "3.12"
         cache: pip
@@ -30,4 +30,3 @@ runs:
     - name: Audit print PDFs
       shell: bash
       run: proofmill audit --config "${{ inputs.config }}" --output-dir "${{ inputs.output-dir }}"
-
