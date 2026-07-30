@@ -13,10 +13,30 @@ from proofmill import __version__
 ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_NAME = "KanadeK"
 EXPECTED_EMAIL = "121669563+KanadeK@users.noreply.github.com"
+GIT = ["git", "-c", f"safe.directory={ROOT.as_posix()}"]
 
 
 def _capture(command: list[str]) -> str:
     return subprocess.check_output(command, cwd=ROOT, text=True, encoding="utf-8").strip()
+
+
+def _git_capture(arguments: list[str]) -> str:
+    return _capture([*GIT, *arguments])
+
+
+def _optional_git_config(key: str) -> str | None:
+    result = subprocess.run(
+        [*GIT, "config", "--get", key],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+    )
+    if result.returncode == 1:
+        return None
+    result.check_returncode()
+    return result.stdout.strip()
 
 
 def _run(command: list[str]) -> None:
@@ -34,16 +54,17 @@ def _asset_hashes(dist: Path) -> dict[str, str]:
 def check(*, run_verify: bool) -> dict[str, object]:
     if run_verify:
         _run(["uv", "run", sys.executable, "scripts/verify.py"])
-    status = _capture(["git", "status", "--porcelain=v1"])
+    status = _git_capture(["status", "--porcelain=v1"])
     if status:
         raise RuntimeError(f"worktree is not clean:\n{status}")
-    if _capture(["git", "config", "user.name"]) != EXPECTED_NAME:
+    configured_name = _optional_git_config("user.name")
+    if configured_name not in (None, EXPECTED_NAME):
         raise RuntimeError("unexpected local git user.name")
-    if _capture(["git", "config", "user.email"]) != EXPECTED_EMAIL:
+    configured_email = _optional_git_config("user.email")
+    if configured_email not in (None, EXPECTED_EMAIL):
         raise RuntimeError("unexpected local git user.email")
-    history = _capture(
+    history = _git_capture(
         [
-            "git",
             "log",
             "--format=%H%x09%an%x09%ae%x09%cn%x09%ce%x09%B%x00",
         ]
@@ -93,8 +114,8 @@ def check(*, run_verify: bool) -> dict[str, object]:
     result: dict[str, object] = {
         "ok": True,
         "version": __version__,
-        "head": _capture(["git", "rev-parse", "HEAD"]),
-        "branch": _capture(["git", "branch", "--show-current"]),
+        "head": _git_capture(["rev-parse", "HEAD"]),
+        "branch": _git_capture(["branch", "--show-current"]),
         "commit_count": len(commits),
         "author": f"{EXPECTED_NAME} <{EXPECTED_EMAIL}>",
         "assets": hashes,
