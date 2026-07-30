@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/KanadeK/proofmill/main/src/proofmill/proofmill.schema.json",
+  "title": "ProofMill configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "profile": {
+      "const": "kdp-paperback"
+    },
+    "trim": {
+      "type": "string",
+      "pattern": "^[0-9.]+[x\u00d7][0-9.]+$"
+    },
+    "bleed": {
+      "type": "boolean"
+    },
+    "ink": {
+      "enum": [
+        "black",
+        "standard-color",
+        "premium-color"
+      ]
+    },
+    "paper": {
+      "enum": [
+        "white",
+        "cream",
+        "groundwood"
+      ]
+    },
+    "direction": {
+      "enum": [
+        "ltr",
+        "rtl"
+      ]
+    },
+    "interior": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cover": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "page_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "fail_on": {
+      "enum": [
+        "error",
+        "warning"
+      ]
+    }
+  },
+  "required": [
+    "profile",
+    "trim",
+    "bleed",
+    "ink",
+    "paper"
+  ]
+}
+

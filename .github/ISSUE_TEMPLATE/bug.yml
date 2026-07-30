@@ -1,0 +1,44 @@
+name: Bug or false positive
+description: Report a reproducible scanner or packaging problem without sharing a manuscript.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Never upload an unpublished manuscript. Use a synthetic PDF and a redacted JSON report.
+  - type: input
+    id: version
+    attributes:
+      label: ProofMill version
+      placeholder: proofmill 0.1.0
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Exact command
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Synthetic reproduction
+      description: Link or attach a minimal synthetic PDF and redacted report.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I confirm the reproduction contains no private manuscript or licensed font file.
+          required: true
+

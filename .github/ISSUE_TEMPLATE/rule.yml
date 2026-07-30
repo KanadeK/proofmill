@@ -1,0 +1,33 @@
+name: New or changed print rule
+description: Propose a sourced profile update.
+title: "[Rule] "
+labels: ["rules"]
+body:
+  - type: input
+    id: source
+    attributes:
+      label: Primary source URL
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: Date observed
+      placeholder: YYYY-MM-DD
+    validations:
+      required: true
+  - type: textarea
+    id: rule
+    attributes:
+      label: Exact measurable rule
+      description: Explain the input evidence, threshold, and suggested severity.
+    validations:
+      required: true
+  - type: textarea
+    id: fixtures
+    attributes:
+      label: Synthetic fixture plan
+      description: Describe the positive and negative PDFs needed to test the rule.
+    validations:
+      required: true
+

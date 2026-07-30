@@ -1,0 +1,14 @@
+{
+  "$schema": "../src/proofmill/proofmill.schema.json",
+  "profile": "kdp-paperback",
+  "trim": "6x9",
+  "bleed": false,
+  "ink": "black",
+  "paper": "white",
+  "direction": "ltr",
+  "interior": "generated/good-interior.pdf",
+  "cover": "generated/good-cover.pdf",
+  "page_count": 120,
+  "fail_on": "error"
+}
+

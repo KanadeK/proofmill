@@ -1,0 +1,17 @@
+.venv/
+.uv-cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+dist-site/
+*.egg-info/
+__pycache__/
+*.py[cod]
+artifacts/
+tmp/
+output/

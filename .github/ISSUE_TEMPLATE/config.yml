@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Repair guide
+    url: https://github.com/KanadeK/proofmill/blob/main/docs/REPAIR_GUIDE.md
+    about: Start here for a reported rule code.
+  - name: KDP support
+    url: https://kdp.amazon.com/en_US/contact-us
+    about: Account, review, and platform-specific publishing support.
+
